@@ -338,7 +338,7 @@
   }
 
   function setBet(object, amount) {
-    if (rouletteWheelLock || ) return;
+    if (rouletteWheelLock || currentBet === 0) return;
     if (money >= amount) {
       money += currentBet;
       currentBet = amount;
