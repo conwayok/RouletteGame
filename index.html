@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roulette Game</title>
+  <style>
+    .BettingArea {
+      background-color: #8b8b8b;
+      border-collapse: collapse;
+      width: 600px;
+    }
+
+    div {
+      float: left;
+      margin: 0px 100px;
+    }
+
+    #MoneyTable {
+      width: 600px;
+      text-align: center;
+      font-size: 30px
+    }
+
+    #ActionTable {
+      width: 600px;
+      text-align: center;
+      font-size: 50px
+    }
+
+    td, th {
+      border: 3px solid #dddddd;
+      text-align: center;
+      padding: 8px;
+      font-family: 標楷體, 新細明體, 微軟正黑體, serif, sans-serif, cursive;
+
+    }
+
+    #InfoTable {
+      font-size: 30px
+    }
+
+
+    .NumberCell {
+      width: 150px;
+    }
+
+    .ActionCell:hover {
+      background-color: #e8f962;
+    }
+
+    body {
+      background-color: #d4d4d4;
+    }
+
+
+    .button {
+      border-radius: 4px;
+      background-color: #f4511e;
+      border: none;
+      color: #FFFFFF;
+      text-align: center;
+      font-size: 28px;
+      padding: 20px;
+      width: 200px;
+      transition: all 0.5s;
+      cursor: pointer;
+
+    }
+
+    .button span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+
+    .button span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+
+    .button:hover span {
+      padding-right: 25px;
+    }
+
+    .button:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+
+    body {
+      background-image: url("background.jpg");
+      /* Full height */
+      height: 100%;
+      background-attachment: fixed;
+      /* Center and scale the image nicely */
+      background-position: center;
+      background-repeat: no-repeat;
+      /*background-size: cover;*/
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="RightArea" id="RightArea">
+  <canvas id="canvas" width="500" height="500"></canvas>
+</div>
+
+<div class="BettingArea" id="BettingArea">
+
+  <table id="InfoTable">
+    <tr>
+      <td width="200px" id="Bet">0</td>
+      <td width="200px" id="BetNumber">0</td>
+      <td width="200px" id="Money">0</td>
+    </tr>
+  </table>
+
+
+  <table id="MoneyTable">
+    <tr>
+      <td width="200px" onclick="setBet(this,1);">1$</td>
+      <td width="200px" onclick="setBet(this,10);">10$</td>
+      <td width="200px" onclick="setBet(this,100);">100$</td>
+    </tr>
+  </table>
+  <table id="numberTable">
+    <tr>
+      <td class="NumberCell" width="150" onclick="setNumber(this,1);">1</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,2);">2</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,3);">3</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,4);">4</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="150" onclick="setNumber(this,5);">5</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,6);">6</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,7);">7</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,8);">8</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="150" onclick="setNumber(this,9);">9</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,10);">10</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,11);">11</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,2);">12</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="150" onclick="setNumber(this,13);">13</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,14);">14</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,15);">15</td>
+      <td class="NumberCell" width="150" onclick="setNumber(this,16);">16</td>
+    </tr>
+
+  </table>
+
+  <table id="ActionTable">
+    <tr width="150">
+      <td class="ActionCell" width="300" onclick="spin();">
+        <button class="button"><span>開始 </span></button>
+
+      </td>
+      <td class="ActionCell" width="300" onclick="reset();">
+        <button class="button"><span>重置 </span></button>
+
+      </td>
+
+    </tr>
+  </table>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+<script>
+  // stuff for roulette wheel
+  var options = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "WIN", "LOSE"];
+  var startAngle = 0;
+  var arc = Math.PI / (options.length / 2);
+  var spinTimeout = null;
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var spinTime = 0;
+  var spinTimeTotal = 0;
+  var spinAngleStart;
+  var spinResult;
+
+
+  class Bet {
+    constructor(id, money) {
+      this.id = id;
+      this.width = money;
+    }
+  }
+
+  var bets = [];
+
+
+  // set action to do when spin button is clicked
+  function spin() {
+    spinAngleStart = Math.random() * 10 + 10;
+    spinTime = 0;
+    spinTimeTotal = Math.random() * 3 + 4 * 1000;
+    rotateWheel();
+  }
+
+  function drawRouletteWheel() {
+    // clear space
+    ctx.clearRect(0, 0, 500, 500);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+
+    ctx.font = 'bold 12px Helvetica, Arial';
+
+    const outsideRadius = 200;
+    const textRadius = 160;
+    const insideRadius = 125;
+
+    // draw wheel
+    for (let i = 0; i < options.length; i++) {
+      let angle = startAngle + i * arc;
+
+      if (i % 2 === 0) ctx.fillStyle = '#FF0000';
+      else ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
+      ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
+      ctx.stroke();
+      ctx.fill();
+      ctx.save();
+      ctx.shadowOffsetX = -1;
+      ctx.shadowOffsetY = -1;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "rgb(220,220,220)";
+      ctx.fillStyle = "black";
+      ctx.translate(250 + Math.cos(angle + arc / 2) * textRadius,
+          250 + Math.sin(angle + arc / 2) * textRadius);
+      ctx.rotate(angle + arc / 2 + Math.PI / 2);
+      let text = options[i];
+      ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+      ctx.restore();
+    }
+
+    // draw arrow
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.moveTo(250 - 4, 250 - (outsideRadius + 5));
+    ctx.lineTo(250 + 4, 250 - (outsideRadius + 5));
+    ctx.lineTo(250 + 4, 250 - (outsideRadius - 5));
+    ctx.lineTo(250 + 9, 250 - (outsideRadius - 5));
+    ctx.lineTo(250, 250 - (outsideRadius - 13));
+    ctx.lineTo(250 - 9, 250 - (outsideRadius - 5));
+    ctx.lineTo(250 - 4, 250 - (outsideRadius - 5));
+    ctx.lineTo(250 - 4, 250 - (outsideRadius + 5));
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function rotateWheel() {
+    rouletteWheelLock = true;
+    spinTime += 30;
+    if (spinTime >= spinTimeTotal) {
+      stopRotateWheel();
+      return;
+    }
+    const spinAngle = spinAngleStart - slowDown(spinTime, 0, spinAngleStart, spinTimeTotal);
+    startAngle += (spinAngle * Math.PI / 180);
+    drawRouletteWheel();
+    spinTimeout = setTimeout('rotateWheel()', 30);
+  }
+
+  function stopRotateWheel() {
+    clearTimeout(spinTimeout);
+    const degrees = startAngle * 180 / Math.PI + 90;
+    const arcd = arc * 180 / Math.PI;
+    const index = Math.floor((360 - degrees % 360) / arcd);
+    ctx.save();
+    ctx.font = 'bold 30px Helvetica, Arial';
+    ctx.fillStyle = 'white';
+    spinResult = options[index];
+    const text = options[index];
+    ctx.fillText(text, 250 - ctx.measureText(text).width / 2, 250 + 10);
+    ctx.restore();
+    checkResult();
+    clear();
+    setView();
+    rouletteWheelLock = false;
+  }
+
+  function slowDown(t, b, c, d) {
+    const ts = (t /= d) * t;
+    const tc = ts * t;
+    return b + c * (tc + -3 * ts + 3 * t);
+  }
+
+  drawRouletteWheel();
+
+  // game logic
+  /*
+  game rule:
+  數字共1~16
+
+  prize:
+  single number: bet*16
+
+  row or col: bet*4
+
+  odd or even (red or black): bet*2
+
+
+
+   */
+  var money = 1000;
+  document.getElementById('Money').innerHTML = money;
+  var currentBet = 0;
+  var selectedNum = 0;
+  var rouletteWheelLock = false;
+
+  function checkResult() {
+    // if didn't select number
+    if (selectedNum === 0) {
+      money += currentBet;
+      return;
+    }
+
+    // if WIN, get back money + bet
+    if (spinResult === 'WIN') {
+      money += currentBet * 2;
+      return;
+    }
+
+    if (spinResult.toString() === selectedNum.toString()) {
+      money += currentBet * 10;
+    }
+
+    // if LOSE or number wrong, win nothing
+  }
+
+  function setBet(object, amount) {
+    if (rouletteWheelLock || ) return;
+    if (money >= amount) {
+      money += currentBet;
+      currentBet = amount;
+      money -= amount;
+      document.getElementById('Bet').innerHTML = "賭金 " + currentBet;
+      document.getElementById('Money').innerHTML = "金額 " + money;
+      $("#MoneyTable td").css({"background-color": "#8b8b8b"});
+      object.style.backgroundColor = 'green';
+    } else {
+      alert("Not enough money!")
+    }
+
+  }
+
+  function setNumber(object, number) {
+    if (rouletteWheelLock) return;
+
+    let bet = new Bet(object.innerText, currentBet);
+    bets.push(bet);
+
+    // selectedNum = number;
+    // document.getElementById('BetNumber').innerHTML = "數字 " + selectedNum;
+    // $("#numberTable td").css({"background-color": "#8b8b8b"});
+    object.style.backgroundColor = 'yellow';
+  }
+
+  function clear() {
+    selectedNum = 0;
+    currentBet = 0;
+  }
+
+  function reset() {
+    if (rouletteWheelLock) return;
+    selectedNum = 0;
+    currentBet = 0;
+    money = 1000;
+    setView();
+  }
+
+  function setView() {
+    document.getElementById('BetNumber').innerHTML = "數字 " + selectedNum;
+    document.getElementById('Money').innerHTML = "金額 " + money;
+    document.getElementById('Bet').innerHTML = "賭金 " + currentBet;
+    $("#numberTable td").css({"background-color": "#8b8b8b"});
+    $("#MoneyTable td").css({"background-color": "#8b8b8b"});
+  }
+
+  reset();
+</script>
+</body>
+</html>
