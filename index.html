@@ -11,8 +11,8 @@
     }
 
     div {
-      float: left;
-      margin: 0px 100px;
+      /*float: left;*/
+      margin: 0 100px;
     }
 
     #MoneyTable {
@@ -25,6 +25,14 @@
       width: 600px;
       text-align: center;
       font-size: 50px
+    }
+
+    #numberTable {
+      width: 600px;
+    }
+
+    #evenOddTable {
+      width: 600px;
     }
 
     td, th {
@@ -103,10 +111,26 @@
       /*background-size: cover;*/
     }
 
+    #BetInfoDiv {
+      float: right;
+      background-color: black;
+    }
+
+    #BetInfo {
+      font-size: 30px;
+      color: white;
+      font-family: Consolas, serif;
+      font-weight: bold;
+    }
+
   </style>
 </head>
 
 <body>
+<div id="BetInfoDiv">
+  <p id="BetInfo">EMPTY</p>
+</div>
+
 <div class="RightArea" id="RightArea">
   <canvas id="canvas" width="500" height="500"></canvas>
 </div>
@@ -115,12 +139,11 @@
 
   <table id="InfoTable">
     <tr>
-      <td width="200px" id="Bet">0</td>
-      <td width="200px" id="BetNumber">0</td>
-      <td width="200px" id="Money">0</td>
+      <!--<td width="200px" id="Bet">0</td>-->
+      <!--<td width="200px" id="BetNumber">0</td>-->
+      <td width="600px" id="Money">0</td>
     </tr>
   </table>
-
 
   <table id="MoneyTable">
     <tr>
@@ -131,46 +154,63 @@
   </table>
   <table id="numberTable">
     <tr>
-      <td class="NumberCell" width="150" onclick="setNumber(this,1);">1</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,2);">2</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,3);">3</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,4);">4</td>
-    </tr>
-    <tr>
-      <td class="NumberCell" width="150" onclick="setNumber(this,5);">5</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,6);">6</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,7);">7</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,8);">8</td>
-    </tr>
-    <tr>
-      <td class="NumberCell" width="150" onclick="setNumber(this,9);">9</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,10);">10</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,11);">11</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,2);">12</td>
-    </tr>
-    <tr>
-      <td class="NumberCell" width="150" onclick="setNumber(this,13);">13</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,14);">14</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,15);">15</td>
-      <td class="NumberCell" width="150" onclick="setNumber(this,16);">16</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,1);">col1</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,2);">col2</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,3);">col3</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,4);">col4</td>
     </tr>
 
+    <tr>
+      <td class="NumberCell" width="120" onclick="setNumber(this,1);">1</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,2);">2</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,3);">3</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,4);">4</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,4);">row1</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="120" onclick="setNumber(this,5);">5</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,6);">6</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,7);">7</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,8);">8</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'row2');">row2</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'9');">9</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'10');">10</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'11');">11</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'2');">12</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,'row3');">row3</td>
+    </tr>
+    <tr>
+      <td class="NumberCell" width="120" onclick="setNumber(this,13);">13</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,14);">14</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,15);">15</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,16);">16</td>
+      <td class="NumberCell" width="120" onclick="setNumber(this,4);">row4</td>
+    </tr>
+  </table>
+
+  <table id="evenOddTable">
+    <tr>
+      <td class="NumberCell" width="300" onclick="setNumber(this,13);">EVEN</td>
+      <td class="NumberCell" width="300" onclick="setNumber(this,14);">ODD</td>
+    </tr>
   </table>
 
   <table id="ActionTable">
-    <tr width="150">
+    <tr>
       <td class="ActionCell" width="300" onclick="spin();">
         <button class="button"><span>開始 </span></button>
-
       </td>
       <td class="ActionCell" width="300" onclick="reset();">
         <button class="button"><span>重置 </span></button>
-
       </td>
-
     </tr>
   </table>
+
 </div>
+
+
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
 
 <script>
@@ -185,17 +225,6 @@
   var spinTimeTotal = 0;
   var spinAngleStart;
   var spinResult;
-
-
-  class Bet {
-    constructor(id, money) {
-      this.id = id;
-      this.width = money;
-    }
-  }
-
-  var bets = [];
-
 
   // set action to do when spin button is clicked
   function spin() {
@@ -296,78 +325,105 @@
 
   drawRouletteWheel();
 
-  // game logic
-  /*
-  game rule:
-  數字共1~16
+  class Bet {
+    constructor(id, money) {
+      this.id = id;
+      this.money = money;
+    }
+  }
 
-  prize:
-  single number: bet*16
+  var bets = [];
 
-  row or col: bet*4
-
-  odd or even (red or black): bet*2
-
-
-
-   */
   var money = 1000;
   document.getElementById('Money').innerHTML = money;
   var currentBet = 0;
   var selectedNum = 0;
   var rouletteWheelLock = false;
+  var betsInfo = '';
 
-  function checkResult() {
-    // if didn't select number
-    if (selectedNum === 0) {
-      money += currentBet;
+  function setBet(object, amount) {
+    if (rouletteWheelLock) return;
+    currentBet = amount;
+    $("#MoneyTable td").css({"background-color": "#8b8b8b"});
+    object.style.backgroundColor = 'green';
+  }
+
+  function setNumber(object) {
+    if (rouletteWheelLock || currentBet === 0) return;
+    if (money < currentBet) {
+      alert("Not enough money!");
       return;
     }
+    let bet = new Bet(object.innerText, currentBet);
+    bets.push(bet);
+    money -= currentBet;
+    document.getElementById('Money').innerHTML = "金額 " + money;
+    object.style.backgroundColor = 'yellow';
 
+    betsInfo = '';
+
+    for (let i = 0; i < bets.length; ++i) {
+      let str = "Bet: " + bets[i].id + ", Amount: " + bets[i].money + "\n";
+      betsInfo += str;
+    }
+    document.getElementById('BetInfo').innerText = betsInfo;
+  }
+
+  // game logic
+  /*
+  game rule:
+  數字共1~16
+  prize:
+  single number: bet*16
+  row or col: bet*4
+  odd or even (red or black): bet*2
+   */
+  function checkResult() {
     // if WIN, get back money + bet
     if (spinResult === 'WIN') {
-      money += currentBet * 2;
-      return;
+      let totalBet = 0;
+      bets.forEach(function (bet) {
+        totalBet += bet.money;
+      });
+      money += totalBet * 2;
+    } else if (bets.length > 0) {
+      for (let i = 0; i < bets.length; ++i) {
+        // if single number same
+        if (bets[i].id === spinResult) {
+          money += bets[i].money * 16;
+        } else if (bets[i].id === 'row1' && (spinResult === '1' || spinResult === '2' || spinResult === '3' || spinResult === '4')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'row2' && (spinResult === '5' || spinResult === '6' || spinResult === '7' || spinResult === '8')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'row3' && (spinResult === '9' || spinResult === '10' || spinResult === '11' || spinResult === '12')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'row4' && (spinResult === '13' || spinResult === '14' || spinResult === '15' || spinResult === '16')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'col1' && (spinResult === '1' || spinResult === '5' || spinResult === '9' || spinResult === '13')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'col2' && (spinResult === '2' || spinResult === '6' || spinResult === '10' || spinResult === '14')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'col3' && (spinResult === '3' || spinResult === '7' || spinResult === '11' || spinResult === '15')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'col4' && (spinResult === '4' || spinResult === '8' || spinResult === '12' || spinResult === '16')) {
+          money += bets[i].money * 4;
+        } else if (bets[i].id === 'EVEN' && ((parseInt(spinResult, 10) % 2 === 0))) {
+          money += bets[i].money * 2;
+        } else if (bets[i].id === 'ODD' && ((parseInt(spinResult, 10) % 2 === 1))) {
+          money += bets[i].money * 2;
+        }
+      }
     }
-
-    if (spinResult.toString() === selectedNum.toString()) {
-      money += currentBet * 10;
-    }
-
+    clear();
+    setView();
     // if LOSE or number wrong, win nothing
   }
 
-  function setBet(object, amount) {
-    if (rouletteWheelLock || currentBet === 0) return;
-    if (money >= amount) {
-      money += currentBet;
-      currentBet = amount;
-      money -= amount;
-      document.getElementById('Bet').innerHTML = "賭金 " + currentBet;
-      document.getElementById('Money').innerHTML = "金額 " + money;
-      $("#MoneyTable td").css({"background-color": "#8b8b8b"});
-      object.style.backgroundColor = 'green';
-    } else {
-      alert("Not enough money!")
-    }
-
-  }
-
-  function setNumber(object, number) {
-    if (rouletteWheelLock) return;
-
-    let bet = new Bet(object.innerText, currentBet);
-    bets.push(bet);
-
-    // selectedNum = number;
-    // document.getElementById('BetNumber').innerHTML = "數字 " + selectedNum;
-    // $("#numberTable td").css({"background-color": "#8b8b8b"});
-    object.style.backgroundColor = 'yellow';
-  }
-
+  // view stuff
   function clear() {
     selectedNum = 0;
     currentBet = 0;
+    bets = [];
   }
 
   function reset() {
@@ -375,15 +431,16 @@
     selectedNum = 0;
     currentBet = 0;
     money = 1000;
+    clear();
     setView();
   }
 
   function setView() {
-    document.getElementById('BetNumber').innerHTML = "數字 " + selectedNum;
+    document.getElementById('BetInfo').innerText = 'EMPTY';
     document.getElementById('Money').innerHTML = "金額 " + money;
-    document.getElementById('Bet').innerHTML = "賭金 " + currentBet;
     $("#numberTable td").css({"background-color": "#8b8b8b"});
     $("#MoneyTable td").css({"background-color": "#8b8b8b"});
+    $("#evenOddTable td").css({"background-color": "#8b8b8b"});
   }
 
   reset();
